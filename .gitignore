@@ -12,3 +12,6 @@ target/
 
 # OS
 .DS_Store
+
+# Lab source archive
+Lab1.zip
