@@ -7,8 +7,8 @@ import java.util.List;
 public interface UserRepository {
     User findById(int userId);
     List<User> findAll();
-    int save(User todo);
-    void update(User todo);
+    int save(User user);
+    void update(User user);
     void deleteById(int userId);
 
     User findByUsername(String username);

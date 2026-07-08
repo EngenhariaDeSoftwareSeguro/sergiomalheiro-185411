@@ -5,7 +5,7 @@ import cncs.academy.ess.controller.messages.UserAddRequest;
 import cncs.academy.ess.controller.messages.UserLoginRequest;
 import cncs.academy.ess.controller.messages.UserResponse;
 import cncs.academy.ess.model.User;
-import cncs.academy.ess.service.TodoUserService;
+import cncs.academy.ess.service.UserService;
 import io.javalin.http.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +15,9 @@ import java.security.NoSuchAlgorithmException;
 public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
-    private final TodoUserService userService;
+    private final UserService userService;
 
-    public UserController(TodoUserService userService) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 

@@ -5,18 +5,20 @@ import cncs.academy.ess.repository.UserRepository;
 
 import java.security.NoSuchAlgorithmException;
 
-public class TodoUserService {
+public class UserService {
     private final UserRepository repository;
 
-    public TodoUserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.repository = userRepository;
     }
+
     public User addUser(String username, String password) throws NoSuchAlgorithmException {
         User user = new User(username, password);
         int id = repository.save(user);
         user.setId(id);
         return user;
     }
+
     public User getUser(int id) {
         return repository.findById(id);
     }
