@@ -22,12 +22,12 @@ User (oficina) 1 -> N Cliente 1 -> N Prancha 1 -> N Reparo 1 -> N Foto
   - `DANO` — fotos do dano antes do conserto;
   - `REPARO` — fotos do resultado depois do conserto.
 
-Cada camada valida a *ownership*: um utilizador só acede a clientes/pranchas/reparos/fotos
+Cada camada valida o acesso: um utilizador só acede a clientes/pranchas/reparos/fotos
 que lhe pertencem (respostas `403` caso contrário, `401` sem token).
 
 ## Arquitetura
 
-Camadas: `model` → `repository` (interface + implementação *in-memory*) → `service`
+Camadas: `model` → `repository` (interface + implementação em memória) → `service`
 → `controller` (handlers Javalin) + DTOs em `controller/messages`. `App.java` monta
 as rotas e injeta dados de exemplo.
 
