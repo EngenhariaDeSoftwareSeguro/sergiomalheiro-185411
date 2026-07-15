@@ -140,7 +140,9 @@ encontrado"; e em `login`, password correta vs. incorreta. As restantes classes 
 (controladores, repositórios SQL) não são alvo destes testes unitários e por isso aparecem com
 cobertura inferior no relatório global — o que é esperado.
 
-![Cobertura JaCoCo das classes-alvo](docs/img/02-cobertura.png)
+![Cobertura JaCoCo — InMemoryUserRepository (100%)](docs/img/02-cobertura-repo.png)
+
+![Cobertura JaCoCo — TodoUserService (100%)](docs/img/03-cobertura-service.png)
 
 ---
 
@@ -181,7 +183,7 @@ docker run --rm -v "${PWD}":/etc/newman -t postman/newman run postman.json
 
 **Resultado: 11 pedidos, 19 asserções, 0 falhas.**
 
-![Newman — repositório em memória](docs/img/03-newman-memoria.png)
+![Newman — repositório em memória](docs/img/04-newman-memoria.png)
 
 ### 4.3. b) Repositório SQL (PostgreSQL)
 
@@ -208,7 +210,7 @@ docker compose down -v
 O facto de a mesma coleção passar sem alterações nos dois backends demonstra que a camada de
 repositório está corretamente abstraída.
 
-![Newman — repositório SQL (PostgreSQL)](docs/img/04-newman-sql.png)
+![Newman — repositório SQL (PostgreSQL)](docs/img/05-newman-sql.png)
 
 ---
 
@@ -240,9 +242,9 @@ Execução: `flutter run -d macos` (Desktop) ou `flutter run -d <emulador>` (And
 - **Android:** como a API de teste é HTTP (não HTTPS), é necessário
   `android:usesCleartextTraffic="true"` no `AndroidManifest.xml`.
 
-![Aplicação em Desktop (macOS)](docs/img/05-flutter-desktop.png)
+![Aplicação em Desktop (macOS)](docs/img/06-flutter-desktop.png)
 
-![Aplicação em Android](docs/img/06-flutter-android.png)
+![Aplicação em Android](docs/img/07-flutter-android.png)
 
 ### 5.3. b) Marcar tarefas como completas (API + cliente)
 
@@ -256,7 +258,7 @@ A funcionalidade foi implementada em toda a stack:
   o `ApiClient.setCompleted(...)` é chamado e a lista é recarregada, mostrando o item riscado
   quando completo.
 
-![Tarefa marcada como completa no cliente](docs/img/07-flutter-completa.png)
+![Tarefa marcada como completa no cliente](docs/img/08-flutter-completa.png)
 
 ---
 
