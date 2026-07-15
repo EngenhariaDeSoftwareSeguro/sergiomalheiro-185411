@@ -1,0 +1,179 @@
+{
+  "info": {
+    "name": "Lab3 - Todo API (integração)",
+    "description": "Testes de integração da Todo API (Lab3). Fluxo completo com captura de token em variável de coleção e asserções em cada passo. Inclui a funcionalidade nova de marcar tarefas como completas. Usa host.docker.internal (dentro do contentor Newman, 'localhost' seria o próprio contentor).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "host.docker.internal:7100" },
+    { "key": "userToken", "value": "" },
+    { "key": "userId", "value": "" },
+    { "key": "listId", "value": "" },
+    { "key": "todoId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Create User",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 201', () => pm.response.to.have.status(201));",
+          "var body = pm.response.json();",
+          "pm.collectionVariables.set('userId', body.userId);",
+          "pm.test('devolve userId', () => pm.expect(body.userId).to.be.a('number'));"
+        ] } }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"test_password\"\n}" },
+        "url": { "raw": "{{baseUrl}}/user", "host": ["{{baseUrl}}"], "path": ["user"] }
+      }
+    },
+    {
+      "name": "Login user",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 200', () => pm.response.to.have.status(200));",
+          "var token = pm.response.text();",
+          "pm.collectionVariables.set('userToken', token);",
+          "pm.test('token no formato Bearer', () => pm.expect(token).to.match(/^Bearer /));"
+        ] } }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"username\": \"testuser\",\n  \"password\": \"test_password\"\n}" },
+        "url": { "raw": "{{baseUrl}}/login", "host": ["{{baseUrl}}"], "path": ["login"] }
+      }
+    },
+    {
+      "name": "Get User",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 200', () => pm.response.to.have.status(200));",
+          "pm.test('username correto', () => pm.expect(pm.response.json().username).to.eql('testuser'));"
+        ] } }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "{{userToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}"] }
+      }
+    },
+    {
+      "name": "Create list",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 201', () => pm.response.to.have.status(201));",
+          "var body = pm.response.json();",
+          "pm.collectionVariables.set('listId', body.listId);",
+          "pm.test('lista pertence ao utilizador', () => pm.expect(body.userId).to.eql(Number(pm.collectionVariables.get('userId'))));"
+        ] } }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "{{userToken}}" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"listName\": \"Lista do Newman\"\n}" },
+        "url": { "raw": "{{baseUrl}}/todolist", "host": ["{{baseUrl}}"], "path": ["todolist"] }
+      }
+    },
+    {
+      "name": "Create todo item",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 200', () => pm.response.to.have.status(200));",
+          "var body = pm.response.json();",
+          "pm.collectionVariables.set('todoId', body.id);",
+          "pm.test('nasce nao-completo', () => pm.expect(body.completed).to.be.false);"
+        ] } }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [ { "key": "Content-Type", "value": "application/json" }, { "key": "Authorization", "value": "{{userToken}}" } ],
+        "body": { "mode": "raw", "raw": "{\n  \"description\": \"Comprar pão\",\n  \"listId\": {{listId}}\n}" },
+        "url": { "raw": "{{baseUrl}}/todo/item", "host": ["{{baseUrl}}"], "path": ["todo", "item"] }
+      }
+    },
+    {
+      "name": "Get all tasks of list",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 200', () => pm.response.to.have.status(200));",
+          "pm.test('e uma lista com pelo menos 1 item', () => pm.expect(pm.response.json().length).to.be.above(0));"
+        ] } }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "{{userToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/todo/{{listId}}/tasks", "host": ["{{baseUrl}}"], "path": ["todo", "{{listId}}", "tasks"] }
+      }
+    },
+    {
+      "name": "Mark todo complete (parte 3b)",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 200', () => pm.response.to.have.status(200));",
+          "pm.test('ficou completo', () => pm.expect(pm.response.json().completed).to.be.true);"
+        ] } }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [ { "key": "Authorization", "value": "{{userToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/todo/{{listId}}/tasks/{{todoId}}/complete", "host": ["{{baseUrl}}"], "path": ["todo", "{{listId}}", "tasks", "{{todoId}}", "complete"] }
+      }
+    },
+    {
+      "name": "Get todo (confirma completo)",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 200', () => pm.response.to.have.status(200));",
+          "pm.test('completed == true', () => pm.expect(pm.response.json().completed).to.be.true);"
+        ] } }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [ { "key": "Authorization", "value": "{{userToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/todo/{{listId}}/tasks/{{todoId}}", "host": ["{{baseUrl}}"], "path": ["todo", "{{listId}}", "tasks", "{{todoId}}"] }
+      }
+    },
+    {
+      "name": "Unauthorized sem token -> 401",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 401', () => pm.response.to.have.status(401));"
+        ] } }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/todolist", "host": ["{{baseUrl}}"], "path": ["todolist"] }
+      }
+    },
+    {
+      "name": "Delete todo item",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 203', () => pm.response.to.have.status(203));"
+        ] } }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [ { "key": "Authorization", "value": "{{userToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/todo/{{listId}}/tasks/{{todoId}}", "host": ["{{baseUrl}}"], "path": ["todo", "{{listId}}", "tasks", "{{todoId}}"] }
+      }
+    },
+    {
+      "name": "Delete User",
+      "event": [
+        { "listen": "test", "script": { "type": "text/javascript", "exec": [
+          "pm.test('status 204', () => pm.response.to.have.status(204));"
+        ] } }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [ { "key": "Authorization", "value": "{{userToken}}" } ],
+        "url": { "raw": "{{baseUrl}}/user/{{userId}}", "host": ["{{baseUrl}}"], "path": ["user", "{{userId}}"] }
+      }
+    }
+  ]
+}

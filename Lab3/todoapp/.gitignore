@@ -1,0 +1,16 @@
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+.idea/
+
+# Pastas de plataforma geradas (recriar com `flutter create .`)
+android/
+ios/
+macos/
+linux/
+windows/
+web/

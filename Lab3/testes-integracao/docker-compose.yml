@@ -1,0 +1,22 @@
+# PostgreSQL para os testes de integração SQL (parte 2b).
+# O esquema em ./initdb é aplicado automaticamente no primeiro arranque.
+#   docker compose up -d          # arranca a base de dados
+#   ...correr a API com REPO=sql e depois o Newman...
+#   docker compose down -v        # pára e apaga os dados
+services:
+  db:
+    image: postgres:16
+    container_name: lab3-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeit
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 15

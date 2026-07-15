@@ -1,0 +1,310 @@
+{
+	"info": {
+		"_postman_id": "746e72aa-4581-4231-8c6c-161b57acbf5b",
+		"name": "C-Academy ESS - Todo Lists - Phase1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3823615"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user3\",\n    \"password\": \"cncs**2024\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/user",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer user3",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/user/3",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"user",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"user3\",\n    \"password\": \"cncs**2024\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/login",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer user3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:7100/user/3",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"user",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lists",
+			"item": [
+				{
+					"name": "Create new list",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer user3",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"listName\":\"class list\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/todolist",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"todolist"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get list",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer user3",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/todolist/3",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"todolist",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Lists of user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer user3",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "localhost:7100/todolist",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"todolist"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Todos",
+			"item": [
+				{
+					"name": "Create new To do",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer jsimao",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"listId\": \"1\",\n    \"description\":\"three\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/todolist/item",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"todolist",
+								"item"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All tasks of List",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer jsimao",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"listId\": \"1\",\n    \"description\":\"third\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:7100/todolist/1/item",
+							"host": [
+								"localhost"
+							],
+							"port": "7100",
+							"path": [
+								"todolist",
+								"1",
+								"item"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
