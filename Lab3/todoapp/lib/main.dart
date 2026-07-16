@@ -126,7 +126,11 @@ class _ListsScreenState extends State<ListsScreen> {
     _reload();
   }
 
-  void _reload() => setState(() => _lists = widget.api.getLists());
+  void _reload() {
+    setState(() {
+      _lists = widget.api.getLists();
+    });
+  }
 
   Future<void> _addListDialog() async {
     final name = await _promptText(context, 'Nova lista');
@@ -195,7 +199,11 @@ class _TodosScreenState extends State<TodosScreen> {
     _reload();
   }
 
-  void _reload() => setState(() => _todos = widget.api.getTodos(widget.list.listId));
+  void _reload() {
+    setState(() {
+      _todos = widget.api.getTodos(widget.list.listId);
+    });
+  }
 
   Future<void> _toggle(Todo todo, bool completed) async {
     await widget.api.setCompleted(widget.list.listId, todo.id, completed);
