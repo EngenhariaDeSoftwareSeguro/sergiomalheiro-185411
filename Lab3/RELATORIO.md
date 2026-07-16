@@ -243,6 +243,28 @@ na mesma rede Wi-Fi. O *runner* Android está igualmente incluído e configurado
 (o emulador Android não foi executado por limitação de tempo na preparação do ambiente;
 o dispositivo iOS físico demonstra o mesmo objetivo multiplataforma em mobile).
 
+#### Detalhes técnicos do deployment no iPhone (via Xcode)
+
+Ao contrário do Android (que empacota a aplicação num **APK**), no iOS a aplicação é compilada
+num *bundle* **`.app` assinado** (distribuível como `.ipa`) e só pode ser instalada num
+dispositivo físico depois de assinada com um certificado de programador. O processo seguido:
+
+1. `flutter create --platforms=ios .` — gera o projeto Xcode (`ios/Runner.xcworkspace`);
+   as dependências nativas são geridas pelo **CocoaPods**;
+2. No iPhone, ativou-se o **Developer Mode** (Definições → Privacidade e Segurança) e ligou-se
+   o dispositivo por cabo ao Mac;
+3. No **Xcode** (target *Runner* → *Signing & Capabilities*): ativou-se
+   *Automatically manage signing* com a equipa pessoal associada ao Apple ID — o Xcode gera
+   automaticamente o certificado de *development* e o *provisioning profile* que autorizam a
+   instalação neste dispositivo (com conta gratuita, o perfil é válido por 7 dias);
+4. `flutter run -d <iPhone>` — compila via `xcodebuild`, assina o `.app`, instala-o pelo cabo
+   e lança a aplicação; na primeira execução foi necessário confiar no certificado no iPhone
+   (Definições → Geral → VPN e Gestão de Dispositivos);
+5. Como o dispositivo físico não vê o `localhost` do Mac, o campo "Servidor" do ecrã de login
+   foi apontado ao IP do anfitrião na rede local (`http://192.168.1.64:7100`), com o Mac e o
+   iPhone na mesma rede Wi-Fi (a API Javalin escuta em `0.0.0.0`, pelo que aceita ligações de
+   qualquer interface sem reconfiguração).
+
 **Notas de configuração encontradas e resolvidas:**
 - **macOS:** a aplicação corre em *sandbox* e bloqueia ligações de saída por omissão. Foi
   adicionada a *entitlement* `com.apple.security.network.client` em
@@ -250,7 +272,8 @@ o dispositivo iOS físico demonstra o mesmo objetivo multiplataforma em mobile).
 - **iOS:** o iOS bloqueia HTTP em claro (*App Transport Security*); foi adicionado
   `NSAllowsArbitraryLoads` ao `ios/Runner/Info.plist` (apenas para testes locais).
 - **Android:** como a API de teste é HTTP (não HTTPS), é necessário
-  `android:usesCleartextTraffic="true"` no `AndroidManifest.xml` (já aplicado).
+  `android:usesCleartextTraffic="true"` no `AndroidManifest.xml` (já aplicado); a geração do
+  APK correspondente faz-se com `flutter build apk --release`, exigindo o Android SDK.
 
 ![Aplicação em Desktop (macOS)](docs/img/06-flutter-desktop.png)
 
