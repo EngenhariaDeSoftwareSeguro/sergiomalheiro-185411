@@ -216,6 +216,17 @@ repositório está corretamente abstraída.
 
 ## 5. Parte 3 — Aplicação cliente multiplataforma
 
+### 5.0. Relação com o código exemplo fornecido (`todoapp-flutter`)
+
+O código exemplo fornecido (`todoapp-flutter/`, incluído no repositório para referência) foi
+analisado: consome os mesmos endpoints (`/login`, `/todolist`, `/todo/{listId}/tasks`) e o mesmo
+modelo de dados (`id`, `listId`, `description`, `completed`), mas é apenas de leitura (login e
+listagem) e traz somente os targets Android/iOS. A aplicação `todoapp/` apresentada neste
+relatório foi **desenhada e escrita de raiz** (alínea c), mantendo total compatibilidade com o
+contrato da API do exemplo, e **estende-o** com: criação de listas e tarefas, eliminação,
+**marcar tarefas como completas** (alínea b), campo de servidor configurável no login e
+targets Desktop (macOS), iOS e Android.
+
 ### 5.1. Arquitetura do cliente (Flutter)
 
 O cliente `todoapp/` está organizado em:
@@ -295,6 +306,51 @@ A funcionalidade foi implementada em toda a stack:
 
 ![Tarefas marcadas como completas no iPhone — incluindo o item "Lab3" criado no próprio dispositivo](docs/img/09-flutter-iphone-completa.jpg)
 
+### 5.4. c) Aplicação Flutter própria — Engenharia de Software utilizada
+
+A aplicação `todoapp/` foi desenhada e escrita de raiz para este laboratório, aplicando as
+práticas de engenharia de software trabalhadas nas sessões:
+
+**Levantamento de requisitos.** Os requisitos funcionais foram derivados do contrato da API
+(endpoints e DTOs dos labs 1/2) e do enunciado: autenticar, listar as listas do utilizador,
+navegar para os itens, criar, eliminar e marcar como completo. Requisitos não-funcionais:
+multiplataforma (Desktop/mobile a partir de uma única base de código), tolerância a falhas de
+rede (mensagens de erro claras) e configuração do servidor sem recompilar.
+
+**Arquitetura em camadas.** O código está separado por responsabilidade única:
+
+| Camada | Ficheiro | Papel |
+|--------|----------|-------|
+| Modelo | `models.dart` | DTOs imutáveis (`TodoList`, `Todo`) com `fromJson` — fronteira única de desserialização |
+| Serviço | `api_client.dart` | Todo o HTTP num só sítio; guarda o token e injeta-o no header `Authorization`; converte respostas em modelos ou exceções |
+| Apresentação | `main.dart` | Três ecrãs (Login → Listas → Tarefas); nenhuma chamada HTTP direta na UI |
+
+Esta separação (padrão *service/repository* no cliente) permite trocar a API ou testar as
+camadas isoladamente — a mesma disciplina usada no back-end (controller → service → repository).
+
+**Padrões e técnicas aplicados:**
+- **Estado assíncrono declarativo:** `FutureBuilder` para os três estados (a carregar / erro /
+  dados), evitando gestão manual de estado;
+- **Injeção de dependência simples:** o `ApiClient` autenticado é passado aos ecrãs por
+  construtor — não há singletons globais;
+- **Configuração por plataforma:** o endereço por omissão adapta-se em runtime
+  (`localhost` no Desktop, `10.0.2.2` no emulador Android) e é editável no ecrã de login para
+  dispositivos físicos — sem *rebuild*;
+- **Tratamento de erros:** códigos HTTP inesperados geram exceções com contexto, apresentadas
+  ao utilizador; o login distingue credenciais inválidas de falhas de rede.
+
+**Considerações de segurança.** O token vive apenas em memória (não é persistido em disco),
+reduzindo a exposição em caso de perda do dispositivo; as exceções ao bloqueio de HTTP em claro
+(ATS no iOS, `usesCleartextTraffic` no Android, *entitlement* no macOS) estão documentadas como
+medidas exclusivas de ambiente de teste — em produção usar-se-ia HTTPS.
+
+**Processo.** Desenvolvimento iterativo e incremental com controlo de versões (git, commits
+pequenos e descritivos): primeiro o fluxo mínimo (login + listagem), depois as operações de
+escrita, por fim a funcionalidade de marcar-completo em toda a stack; cada iteração foi
+validada manualmente contra a API real em três plataformas (macOS, iPhone físico e, no
+desenvolvimento, Chrome), tendo os defeitos encontrados (sandbox do macOS, ATS do iOS,
+`setState` com `Future`) sido corrigidos e documentados neste relatório.
+
 ---
 
 ## 6. Conclusão
@@ -308,5 +364,8 @@ Todos os objetivos do laboratório foram cumpridos:
 - **Parte 3:** cliente Flutter a correr em Desktop (macOS) e num iPhone físico (iOS), estendido
   com a funcionalidade de marcar tarefas como completas (API + cliente), demonstrada em ambas
   as plataformas.
+- **Parte 3c:** aplicação Flutter desenhada e escrita de raiz (compatível e mais completa que o
+  exemplo fornecido), acompanhada do relatório da engenharia de software utilizada no seu
+  desenvolvimento (secção 5.4).
 
 O código, a coleção de testes e o cliente estão no repositório GitHub indicado no topo.

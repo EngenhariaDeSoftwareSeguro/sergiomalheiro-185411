@@ -16,3 +16,5 @@ target/
 # Lab source archive
 Lab1.zip
 Lab3/.tools/
+Lab3/todoapp-flutter/android/local.properties
+Lab3/*.pdf
