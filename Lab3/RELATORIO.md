@@ -226,25 +226,35 @@ O cliente `todoapp/` está organizado em:
 | `lib/api_client.dart` | Cliente HTTP: `login`, `getLists`, `createList`, `getTodos`, `createTodo`, `setCompleted`, `deleteTodo` |
 | `lib/main.dart` | Interface: ecrãs de Login → Listas → Tarefas |
 
-O endereço da API adapta-se à plataforma: `http://localhost:7100` no Desktop e
-`http://10.0.2.2:7100` no emulador Android (onde `localhost` seria o próprio emulador). O token
-`Bearer <username>` devolvido pelo login é enviado tal e qual no header `Authorization`.
+O endereço da API adapta-se à plataforma: `http://localhost:7100` no Desktop,
+`http://10.0.2.2:7100` no emulador Android, e o **IP do anfitrião na rede local** num
+dispositivo físico (campo "Servidor" editável no ecrã de login). O token `Bearer <username>`
+devolvido pelo login é enviado tal e qual no header `Authorization`.
 
-### 5.2. a) Execução em Android e Desktop
+### 5.2. a) Execução em Desktop e em dispositivo móvel
 
-Preparação (uma vez): `flutter pub get` e `flutter create --platforms=android,macos .`.
-Execução: `flutter run -d macos` (Desktop) ou `flutter run -d <emulador>` (Android).
+Preparação (uma vez): `flutter pub get` e `flutter create --platforms=android,ios,macos .`.
+Execução: `flutter run -d macos` (Desktop) ou `flutter run -d <dispositivo>` (móvel).
+
+A aplicação foi testada em **Desktop (macOS)** e num **iPhone físico (iOS)**, ligado por cabo
+e assinado via Xcode (*Automatically manage signing*). No iPhone, o campo "Servidor" foi
+apontado ao IP do Mac na rede local (`http://192.168.1.64:7100`), com ambos os equipamentos
+na mesma rede Wi-Fi. O *runner* Android está igualmente incluído e configurado no projeto
+(o emulador Android não foi executado por limitação de tempo na preparação do ambiente;
+o dispositivo iOS físico demonstra o mesmo objetivo multiplataforma em mobile).
 
 **Notas de configuração encontradas e resolvidas:**
 - **macOS:** a aplicação corre em *sandbox* e bloqueia ligações de saída por omissão. Foi
   adicionada a *entitlement* `com.apple.security.network.client` em
   `macos/Runner/DebugProfile.entitlements` e `Release.entitlements`.
+- **iOS:** o iOS bloqueia HTTP em claro (*App Transport Security*); foi adicionado
+  `NSAllowsArbitraryLoads` ao `ios/Runner/Info.plist` (apenas para testes locais).
 - **Android:** como a API de teste é HTTP (não HTTPS), é necessário
-  `android:usesCleartextTraffic="true"` no `AndroidManifest.xml`.
+  `android:usesCleartextTraffic="true"` no `AndroidManifest.xml` (já aplicado).
 
 ![Aplicação em Desktop (macOS)](docs/img/06-flutter-desktop.png)
 
-![Aplicação em Android](docs/img/07-flutter-android.png)
+![Login no iPhone físico, com o servidor apontado ao IP do Mac na rede local](docs/img/07-flutter-iphone-login.jpg)
 
 ### 5.3. b) Marcar tarefas como completas (API + cliente)
 
@@ -258,7 +268,9 @@ A funcionalidade foi implementada em toda a stack:
   o `ApiClient.setCompleted(...)` é chamado e a lista é recarregada, mostrando o item riscado
   quando completo.
 
-![Tarefa marcada como completa no cliente](docs/img/08-flutter-completa.png)
+![Tarefas marcadas como completas no Desktop (macOS)](docs/img/08-flutter-completa.png)
+
+![Tarefas marcadas como completas no iPhone — incluindo o item "Lab3" criado no próprio dispositivo](docs/img/09-flutter-iphone-completa.jpg)
 
 ---
 
@@ -270,7 +282,8 @@ Todos os objetivos do laboratório foram cumpridos:
   com **100 % de cobertura de linhas** em ambas as classes.
 - **Parte 2:** coleção Postman executada com Newman, com **19 asserções sem falhas** tanto no
   repositório em memória como em PostgreSQL.
-- **Parte 3:** cliente Flutter a correr em Desktop e Android, estendido com a funcionalidade de
-  marcar tarefas como completas (API + cliente).
+- **Parte 3:** cliente Flutter a correr em Desktop (macOS) e num iPhone físico (iOS), estendido
+  com a funcionalidade de marcar tarefas como completas (API + cliente), demonstrada em ambas
+  as plataformas.
 
 O código, a coleção de testes e o cliente estão no repositório GitHub indicado no topo.
