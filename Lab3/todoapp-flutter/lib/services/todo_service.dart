@@ -41,7 +41,7 @@ class TodoService {
       http.Response resp = await http.get(
         uri,
         headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.authorizationHeader: token, // token já vem no formato 'Bearer <user>' da API
         },
       );
       LoggerService.info('Response: ${resp.body}');
@@ -62,7 +62,7 @@ class TodoService {
       http.Response resp = await http.get(
         uri,
         headers: {
-          HttpHeaders.authorizationHeader: 'Bearer $token',
+          HttpHeaders.authorizationHeader: token, // token já vem no formato 'Bearer <user>' da API
         },
       );
       if (resp.statusCode == 200) {

@@ -241,9 +241,35 @@ resolver três incompatibilidades de versões — um exercício útil de gestão
 | `Inconsistent JVM-target compatibility ... (1.8) and (21)` | `compileOptions` em Java 8 mas Kotlin a compilar para 21 | `sourceCompatibility`/`targetCompatibility` → **17** e `kotlinOptions.jvmTarget` → **17** |
 
 Após estas alterações a compilação conclui com sucesso
-(`✓ Built build/app/outputs/flutter-apk/app-debug.apk`) e a aplicação executa no emulador,
-autenticando e listando as listas e tarefas obtidas da API (o `.env` do projeto já aponta para
-`10.0.2.2:7100`, o alias do anfitrião visto do emulador).
+(`✓ Built build/app/outputs/flutter-apk/app-debug.apk`).
+
+**Defeito funcional encontrado (duplicação do prefixo `Bearer`).** Depois de compilar, a
+aplicação autenticava mas apresentava a lista vazia. A análise dos registos do servidor revelou
+a causa exata:
+
+```
+AuthorizationMiddleware - Authorization token is invalid Bearer user1
+```
+
+O `TodoUserService.login` da API devolve o token **já com o prefixo** (`"Bearer user1"`), mas o
+cliente compunha o cabeçalho como `'Bearer $token'`, enviando `Authorization: Bearer Bearer
+user1`. O middleware remove os primeiros 7 caracteres (`"Bearer "`) e procura o utilizador
+`"Bearer user1"`, que não existe — daí o 401 e a lista vazia. A correção foi enviar o token tal
+como a API o devolve (`lib/services/todo_service.dart`):
+
+```dart
+// antes:  HttpHeaders.authorizationHeader: 'Bearer $token',
+// depois: HttpHeaders.authorizationHeader: token,
+```
+
+Este caso ilustra bem a importância de um **contrato de API explícito**: como o token já
+transporta o esquema de autenticação, a responsabilidade de o prefixar não pode estar também do
+lado do cliente. Na aplicação desenvolvida por nós esta ambiguidade foi evitada desde o início,
+tratando o valor devolvido pelo `/login` como opaco e enviando-o sem transformação.
+
+Com esta correção a aplicação base executa corretamente no emulador, autenticando e listando as
+listas e tarefas obtidas da API (o `.env` do projeto já aponta para `10.0.2.2:7100`, o alias do
+anfitrião visto do emulador).
 
 ![Aplicação base fornecida (todoapp-flutter) a executar no emulador Android](docs/img/11-base-prof-android.png)
 
