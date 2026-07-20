@@ -227,6 +227,26 @@ contrato da API do exemplo, e **estende-o** com: criação de listas e tarefas, 
 **marcar tarefas como completas** (alínea b), campo de servidor configurável no login e
 targets Desktop (macOS), iOS e Android.
 
+### 5.0.1. Compilação e execução da aplicação base fornecida
+
+Conforme pedido no enunciado ("garanta que consegue compilar o código e executar a aplicação
+base"), o projeto `todoapp-flutter/` foi compilado e executado no emulador Android. A
+compilação falhava inicialmente com o toolchain atual, tendo sido necessário diagnosticar e
+resolver três incompatibilidades de versões — um exercício útil de gestão de dependências:
+
+| Erro observado | Causa | Correção aplicada |
+|----------------|-------|-------------------|
+| `Unsupported class file major version 65` | Gradle 7.6.3 não suporta Java 21 (o JDK que acompanha o Android Studio) | Gradle wrapper 7.6.3 → **8.9** |
+| `Your project's Gradle version is lower than Flutter's minimum supported version of 8.7.0` | O Flutter atual exige Gradle ≥ 8.7 | confirmada a versão 8.9; AGP 7.3.0 → **8.6.0**, Kotlin 1.7.10 → **1.9.0** |
+| `Inconsistent JVM-target compatibility ... (1.8) and (21)` | `compileOptions` em Java 8 mas Kotlin a compilar para 21 | `sourceCompatibility`/`targetCompatibility` → **17** e `kotlinOptions.jvmTarget` → **17** |
+
+Após estas alterações a compilação conclui com sucesso
+(`✓ Built build/app/outputs/flutter-apk/app-debug.apk`) e a aplicação executa no emulador,
+autenticando e listando as listas e tarefas obtidas da API (o `.env` do projeto já aponta para
+`10.0.2.2:7100`, o alias do anfitrião visto do emulador).
+
+![Aplicação base fornecida (todoapp-flutter) a executar no emulador Android](docs/img/11-base-prof-android.png)
+
 ### 5.1. Arquitetura do cliente (Flutter)
 
 O cliente `todoapp/` está organizado em:

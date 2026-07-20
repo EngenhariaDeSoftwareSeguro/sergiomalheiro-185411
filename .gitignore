@@ -18,3 +18,5 @@ Lab1.zip
 Lab3/.tools/
 Lab3/todoapp-flutter/android/local.properties
 Lab3/*.pdf
+Lab3/todoapp-flutter/build/
+Lab3/todoapp-flutter/.dart_tool/
