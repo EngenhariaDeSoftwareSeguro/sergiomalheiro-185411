@@ -247,12 +247,21 @@ devolvido pelo login é enviado tal e qual no header `Authorization`.
 Preparação (uma vez): `flutter pub get` e `flutter create --platforms=android,ios,macos .`.
 Execução: `flutter run -d macos` (Desktop) ou `flutter run -d <dispositivo>` (móvel).
 
-A aplicação foi testada em **Desktop (macOS)** e num **iPhone físico (iOS)**, ligado por cabo
-e assinado via Xcode (*Automatically manage signing*). No iPhone, o campo "Servidor" foi
-apontado ao IP do Mac na rede local (`http://192.168.1.64:7100`), com ambos os equipamentos
-na mesma rede Wi-Fi. O *runner* Android está igualmente incluído e configurado no projeto
-(o emulador Android não foi executado por limitação de tempo na preparação do ambiente;
-o dispositivo iOS físico demonstra o mesmo objetivo multiplataforma em mobile).
+A aplicação foi testada nas **três** plataformas a partir da mesma base de código:
+
+| Plataforma | Ambiente | Endereço da API |
+|------------|----------|-----------------|
+| **Desktop** | macOS (target `macos`) | `http://localhost:7100` (automático) |
+| **Android** | Emulador Pixel 9, Android 16 (API 36), arm64 | `http://10.0.2.2:7100` (automático) |
+| **iOS** *(extra)* | iPhone físico, assinado via Xcode | `http://192.168.1.64:7100` (IP do Mac na rede local) |
+
+No **Android**, o emulador foi criado no Android Studio (*Device Manager*) e a aplicação
+instalada com `flutter run -d emulator-5554`; o endereço `10.0.2.2` é resolvido
+automaticamente pela aplicação, por ser o alias do anfitrião visto de dentro do emulador.
+
+Como demonstração adicional de portabilidade, a mesma base de código foi ainda executada num
+**iPhone físico**, ligado por cabo e assinado via Xcode (*Automatically manage signing*), com
+o campo "Servidor" apontado ao IP do Mac na rede local (ambos na mesma rede Wi-Fi).
 
 #### Detalhes técnicos do deployment no iPhone (via Xcode)
 
@@ -288,6 +297,10 @@ dispositivo físico depois de assinada com um certificado de programador. O proc
 
 ![Aplicação em Desktop (macOS)](docs/img/06-flutter-desktop.png)
 
+![Login no emulador Android (Pixel 9, API 36), com o endereço 10.0.2.2 resolvido automaticamente](docs/img/07-flutter-android-login.png)
+
+![Listas do utilizador no emulador Android](docs/img/07b-flutter-android-listas.png)
+
 ![Login no iPhone físico, com o servidor apontado ao IP do Mac na rede local](docs/img/07-flutter-iphone-login.jpg)
 
 ### 5.3. b) Marcar tarefas como completas (API + cliente)
@@ -304,7 +317,12 @@ A funcionalidade foi implementada em toda a stack:
 
 ![Tarefas marcadas como completas no Desktop (macOS)](docs/img/08-flutter-completa.png)
 
-![Tarefas marcadas como completas no iPhone — incluindo o item "Lab3" criado no próprio dispositivo](docs/img/09-flutter-iphone-completa.jpg)
+![Tarefas marcadas como completas no emulador Android — incluindo o item "Lab3" criado na própria aplicação](docs/img/10-flutter-android-completa.png)
+
+![Tarefas marcadas como completas no iPhone](docs/img/09-flutter-iphone-completa.jpg)
+
+A funcionalidade foi validada nas três plataformas, com a alteração a ser persistida no
+servidor (o estado mantém-se após recarregar a lista, confirmando a chamada `PUT` à API).
 
 ### 5.4. c) Aplicação Flutter própria — Engenharia de Software utilizada
 
@@ -361,9 +379,9 @@ Todos os objetivos do laboratório foram cumpridos:
   com **100 % de cobertura de linhas** em ambas as classes.
 - **Parte 2:** coleção Postman executada com Newman, com **19 asserções sem falhas** tanto no
   repositório em memória como em PostgreSQL.
-- **Parte 3:** cliente Flutter a correr em Desktop (macOS) e num iPhone físico (iOS), estendido
-  com a funcionalidade de marcar tarefas como completas (API + cliente), demonstrada em ambas
-  as plataformas.
+- **Parte 3:** cliente Flutter a correr em **Desktop (macOS)** e **Android** (emulador Pixel 9,
+  API 36) — e ainda, como extra, num **iPhone físico** — estendido com a funcionalidade de
+  marcar tarefas como completas (API + cliente), demonstrada em todas as plataformas.
 - **Parte 3c:** aplicação Flutter desenhada e escrita de raiz (compatível e mais completa que o
   exemplo fornecido), acompanhada do relatório da engenharia de software utilizada no seu
   desenvolvimento (secção 5.4).
