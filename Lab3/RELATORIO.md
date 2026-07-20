@@ -271,7 +271,9 @@ Com esta correção a aplicação base executa corretamente no emulador, autenti
 listas e tarefas obtidas da API (o `.env` do projeto já aponta para `10.0.2.2:7100`, o alias do
 anfitrião visto do emulador).
 
-![Aplicação base fornecida (todoapp-flutter) a executar no emulador Android](docs/img/11-base-prof-android.png)
+![Aplicação base fornecida (todoapp-flutter) a executar no emulador Android — listas obtidas da API após autenticação](docs/img/11-base-prof-listas.png)
+
+![Tarefas da lista na aplicação base. Note-se `Milk: true` e `Cheese: true` — o estado de "completa" definido a partir da aplicação desenvolvida neste trabalho, confirmando que ambos os clientes partilham a mesma API e a mesma persistência](docs/img/11b-base-prof-tarefas.png)
 
 ### 5.1. Arquitetura do cliente (Flutter)
 
